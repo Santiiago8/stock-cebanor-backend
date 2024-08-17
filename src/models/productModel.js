@@ -18,12 +18,19 @@ const Product = {
     //Obtener todos los productos
     getAllProducts: async () => {
         try {
-            const result = await db.any(
-                'SELECT * FROM products'
-            );
-            return result;
+            const productsQuery = `
+              SELECT p.id, p.nombre, p.descripcion, p.precio,
+                     json_agg(json_build_object('store_id', ps.store_id, 'store_name', s.name, 'stock', ps.stock_quantity)) AS stores
+              FROM products p
+              LEFT JOIN product_stocks ps ON p.id = ps.product_id
+              LEFT JOIN stores s ON ps.store_id = s.id
+              GROUP BY p.id
+            `;
+            const rows = await db.any(productsQuery); // Cambiado a db.any
+            return rows;
         } catch (error) {
-            console.error({error: error.message});
+            console.error('Error al obtener productos', error);
+            throw error;
         }
     },
 

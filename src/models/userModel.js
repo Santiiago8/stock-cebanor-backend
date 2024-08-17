@@ -41,7 +41,7 @@ const User = {
     },
 
     getByUsername: async (nombre) => {
-        return await db.oneOrNone('SELECT * FROM users WHERE nombre = $1', [nombre]);
+        return await db.oneOrNone('SELECT id, nombre, apellido, contrasena, isSuperAdmin FROM users WHERE nombre = $1', [nombre]);
     },
 
     //Actualizar usuario

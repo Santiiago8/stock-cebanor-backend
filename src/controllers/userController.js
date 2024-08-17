@@ -5,6 +5,8 @@ const userController = {
         try {
             const user = await User.create(req.body);
             res.status(201).json(user);
+            console.log('este es el user: ' + user);
+            
         } catch (error) {
             res.status(500).json({ message: error.message });
         }
@@ -34,18 +36,19 @@ const userController = {
 
     loginUser: async (req, res) => {
         const { nombre, contrasena } = req.body;
-
+    
         try {
             const user = await User.getByUsername(nombre);
+            console.log('Usuario encontrado:', user);
             if (user && user.contrasena === contrasena) {
                 res.status(200).json({ 
                     user: {
                         id: user.id,
                         nombre: user.nombre,
                         apellido: user.apellido,
-                        isSuperAdmin: user.isSuperAdmin
+                        isSuperAdmin: user.issuperadmin
                     }
-                 });
+                });
             } else {
                 res.status(401).json({ message: 'Nombre de usuario o contraseña incorrectos.' });
             }
