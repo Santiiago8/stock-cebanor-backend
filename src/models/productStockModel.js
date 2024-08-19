@@ -50,6 +50,21 @@ const ProductStock = {
             console.error({ error: error.message });
         }
     },
+    
+    // Actualizar stock de un producto en una tienda específica
+    updateStock: async (product_id, store_id, stock_quantity) => {
+        try {
+            const result = await db.one(
+                'UPDATE product_stocks SET stock_quantity = stock_quantity - $1 WHERE product_id = $2 AND store_id = $3 RETURNING *',
+                [quantity, product_id, store_id]
+            );
+
+            return result;
+        } catch (error) {
+            console.log('Error al actualizar el stock', error);
+            throw error;
+        }
+    },
 
     delete: async (id) => {
         try {

@@ -17,7 +17,7 @@ app.use(cors());
 // Rutas
 app.use('/users', userRoutes);
 app.use('/products', productsRoutes);
-app.use('/stores', storeRoutes);
+app.use('/stores', storeRoutes)
 app.use('/product-stocks', productStockRoutes);
 
 //iniciar sv
