@@ -13,7 +13,6 @@ const productController = {
 
     createProductWithStock: async (req, res) => {
         const { nombre, descripcion, precio, stock } = req.body;
-        console.log(req.body);
         try {
             const newProduct = await Product.create({ nombre, descripcion, precio });
 
@@ -36,10 +35,10 @@ const productController = {
     },
 
     updateProductStock: async (req, res) => {
-        const { productId, storeId, quantity } = req.body;
+        const { productId, storeId, stock_quantity } = req.body;
         try {
-            const updateStock = await ProductStock.updateStock(productId, storeId, quantity);
-            res.status(200).json({ message: 'Stock actualizado', updatedStock });
+            await ProductStock.updateStock(productId, storeId, stock_quantity);
+            res.status(200).json({ message: 'Stock actualizado' });
         } catch (error) {
             res.status(500).json({ message: error.message });
         }
@@ -56,11 +55,11 @@ const productController = {
 
     getProductById: async (req, res) => {
         try {
-            const product = await Product.getProductById(req.params.id);
+            const product = await Product.getById(req.params.id);
             if (product) {
                 res.status(200).json(product);
             } else {
-                res.status(404).json({ message: 'Product not found' });
+                res.status(404).json({ message: 'Producto no encontrado' });
             }
         } catch (error) {
             res.status(500).json({ message: error.message });
@@ -80,15 +79,14 @@ const productController = {
         try {
             const product = await Product.getById(req.params.id);
             if (!product) {
-                return res.status(404).json({ message: 'Product not found' });
+                return res.status(404).json({ message: 'Producto no encontrado' });
             }
             await Product.delete(req.params.id);
-            res.status(200).json(product);
+            res.status(200).json({ message: 'Producto eliminado', product });
         } catch (error) {
             res.status(500).json({ message: error.message });
         }
     }
-
-}
+};
 
 export default productController;

@@ -52,16 +52,19 @@ const ProductStock = {
     },
     
     // Actualizar stock de un producto en una tienda específica
-    updateStock: async (product_id, store_id, stock_quantity) => {
+    updateStock: async (productId, storeId, quantity) => {
         try {
-            const result = await db.one(
-                'UPDATE product_stocks SET stock_quantity = stock_quantity - $1 WHERE product_id = $2 AND store_id = $3 RETURNING *',
-                [quantity, product_id, store_id]
-            );
+            // Verificar que `quantity` no sea nulo o undefined
+            if (quantity === null || quantity === undefined) {
+                throw new Error('El valor de stock_quantity no puede ser nulo');
+            }
 
-            return result;
+            await db.none(
+                'UPDATE product_stocks SET stock_quantity = $1 WHERE product_id = $2 AND store_id = $3',
+                [quantity, productId, storeId]
+            );
         } catch (error) {
-            console.log('Error al actualizar el stock', error);
+            console.error('Error al actualizar stock', error);
             throw error;
         }
     },

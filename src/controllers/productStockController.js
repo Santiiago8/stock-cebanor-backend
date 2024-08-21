@@ -29,10 +29,21 @@ const productStockController = {
     },
 
     updateProductStock: async (req, res) => {
+        const { productId, storeId, quantity } = req.body;
+        if (!productId || !storeId || quantity === undefined) {
+            return res.status(400).json({ message: 'Faltan datos requeridos' });
+        }
+
         try {
-            const productStock = await ProductStock.update(req.params.id, req.body);
-            res.status(200).json(productStock);
+            // Verificar que `quantity` no sea null o undefined
+            if (quantity === null || quantity === undefined) {
+                return res.status(400).json({ message: 'El valor de la cantidad no puede ser nulo' });
+            }
+
+            await ProductStock.updateStock(productId, storeId, quantity);
+            res.status(200).json({ message: 'Stock actualizado' });
         } catch (error) {
+            console.error('Error al actualizar stock', error);
             res.status(500).json({ message: error.message });
         }
     },
